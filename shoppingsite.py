@@ -7,7 +7,7 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken.
 """
 
 
-from flask import Flask, render_template, redirect, flash
+from flask import Flask, render_template, redirect, flash, session, url_for, escape, request
 import jinja2
 
 import model
@@ -30,9 +30,11 @@ app.jinja_env.undefined = jinja2.StrictUndefined
 @app.route("/")
 def index():
     """Return homepage."""
+    if 'username' in session:
+        return 'Logged in as %s' % escape(session['username'])
+    return 'You are not logged in'
 
     return render_template("homepage.html")
-
 
 @app.route("/melons")
 def list_melons():
@@ -80,24 +82,35 @@ def add_to_cart(id):
     return "Oops! This needs to be implemented!"
 
 
-@app.route("/login", methods=["GET"])
+@app.route("/login", methods=["GET", "POST"])
 def show_login():
     """Show login form."""
+    if request.method == 'POST':
+        session['username'] = request.form['username']
+        return redirect(url_for('index'))
+   
+    if request.method == "GET":
+
+        '''<form action="" method="post">
+            <p><input type=text name=username>
+            <p><input type=submit value=Login>
+        </form>
+        '''
 
     return render_template("login.html")
 
 
-@app.route("/login", methods=["POST"])
-def process_login():
-    """Log user into site.
+# @app.route("/login", methods=["POST"])
+# def process_login():
+#     """Log user into site.
 
-    Find the user's login credentials located in the 'request.form'
-    dictionary, look up the user, and store them in the session.
-    """
+#     Find the user's login credentials located in the 'request.form'
+#     dictionary, look up the user, and store them in the session.
+#     """
 
-    # TODO: Need to implement this!
+#     # TODO: Need to implement this!
 
-    return "Oops! This needs to be implemented"
+#     return "Oops! This needs to be implemented"
 
 
 @app.route("/checkout")
