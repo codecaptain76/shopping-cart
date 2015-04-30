@@ -61,11 +61,12 @@ def show_melon(id):
 @app.route("/cart")
 def shopping_cart():
     """Display content of shopping cart."""
+    
 
     # TODO: Display the contents of the shopping cart.
     #   - The cart is a list in session containing melons added
-
-    return render_template("cart.html")
+    melon_list = []
+    return render_template("cart.html", melons_list = melons)
 
 
 @app.route("/add_to_cart/<int:id>")
@@ -75,29 +76,43 @@ def add_to_cart(id):
     When a melon is added to the cart, redirect browser to the shopping cart
     page and display a confirmation message: 'Successfully added to cart'.
     """
+    
+    melon_list.append(id)
+   
+    flash("Melon was successfully added to cart")
+    return render_template("cart.html", melons_list = melons)
+    
+
 
     # TODO: Finish shopping cart functionality
     #   - use session variables to hold cart list
 
-    return "Oops! This needs to be implemented!"
 
 
 @app.route("/login", methods=["GET", "POST"])
 def show_login():
     """Show login form."""
     if request.method == 'POST':
-        session['username'] = request.form['username']
+        email = request.form('email')
+        password = request.form('password')
+
+
+        session['email'] = request.form['email']
+        session['password'] = request.form['password']
+
+        # print email
+        # print password
+
         return redirect(url_for('index'))
    
     if request.method == "GET":
 
-        '''<form action="" method="post">
-            <p><input type=text name=username>
-            <p><input type=submit value=Login>
-        </form>
-        '''
-
-    return render_template("login.html")
+        email = request.args.get('email')
+        password = request.args.get('password')
+        return render_template("login.html")
+        
+        print email
+        print password 
 
 
 # @app.route("/login", methods=["POST"])
