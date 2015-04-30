@@ -17,15 +17,16 @@ app = Flask(__name__)
 
 # Need to use Flask sessioning features
 
-app.secret_key = 'this-should-be-something-unguessable'
+app.secret_key = 'melons-are-awesome'
 
 # Normally, if you refer to an undefined variable in a Jinja template,
 # Jinja silently ignores this. This makes debugging difficult, so we'll
 # set an attribute of the Jinja environment that says to make this an
 # error.
 
-app.jinja_env.undefined = jinja2.StrictUndefined
 
+app.jinja_env.undefined = jinja2.StrictUndefined
+melons = model.Melon.get_all()
 
 @app.route("/")
 def index():
@@ -62,10 +63,27 @@ def show_melon(id):
 def shopping_cart():
     """Display content of shopping cart."""
     
+    
+    #query db for all melons that match ids in melons_added 
+    #    SELECT * FROM Melons Where melon_id = melons_added_id 
+
+    #extracting melon ids from cart and rebinding to a list named melons_added
+    melons_ids = session.keys() 
+    print session.keys() 
+
+    #getting pricing information for each melon type in cart
+    for id in melons_ids:
+        melon = model.Melon.get_by_id(id)    
+        print id  
+    #counting melons
+
+    #quantity = count(melons_ids)    
+    #print quantity
+
 
     # TODO: Display the contents of the shopping cart.
     #   - The cart is a list in session containing melons added
-    melon_list = []
+    
     return render_template("cart.html", melons_list = melons)
 
 
@@ -76,9 +94,13 @@ def add_to_cart(id):
     When a melon is added to the cart, redirect browser to the shopping cart
     page and display a confirmation message: 'Successfully added to cart'.
     """
+    #make the cart, where cart = []
+    #append the cart with melon ids
     
-    melon_list.append(id)
-   
+    session.setdefault('cart', []).append(id)
+
+        #check out setDefault to check if keys in cart
+  
     flash("Melon was successfully added to cart")
     return render_template("cart.html", melons_list = melons)
     
