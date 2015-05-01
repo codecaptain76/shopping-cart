@@ -67,14 +67,28 @@ def shopping_cart():
     #query db for all melons that match ids in melons_added 
     #    SELECT * FROM Melons Where melon_id = melons_added_id 
 
+    session = {'melon_count':{}}
     #extracting melon ids from cart and rebinding to a list named melons_added
-    melons_ids = session.keys() 
-    print session.keys() 
+    melons_ids = session['cart']
+    print melons_ids
 
-    #getting pricing information for each melon type in cart
-    for id in melons_ids:
-        melon = model.Melon.get_by_id(id)    
-        print id  
+    #getting pricing information for each melon type in cart in a dictionary
+    #melon_info = { id: model.Melon.get_by_id(id) for id in melons_ids}
+
+    
+
+    for melon in melons_ids:
+        session = melon_count.get(melon, 0) + 1
+
+    print session
+
+
+
+
+
+
+        #melon = model.Melon.get_by_id(id)    
+    
     #counting melons
 
     #quantity = count(melons_ids)    
